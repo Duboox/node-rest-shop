@@ -11,8 +11,14 @@ router.get('/', (req, res, next) => {
 });
 
 router.post('/', (req, res, next) => {
+    const newOrder = {
+        productId: req.body.productId,
+        qty: req.body.qty
+    }
+
     res.status(status.post_CREATED).json({
-        message: 'Handling POST request to /orders'
+        message: 'Handling POST request to /orders',
+        order: order
     })
 });
 

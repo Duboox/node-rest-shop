@@ -5,3 +5,6 @@ A Node.js RESTful API shop with User Tokens
 cd node-rest-shop
 npm install
 node server.js
+
+## Nodemon watch files
+npm start
