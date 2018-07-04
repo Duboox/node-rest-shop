@@ -1,0 +1,2 @@
+const mongoConfig = "mongodb://" + process.env.MONGO_ATLAS_USER + ":" + process.env.MONGO_ATLAS_PASSWORD + "@node-rest-shop-shard-00-00-mrytj.mongodb.net:27017,node-rest-shop-shard-00-01-mrytj.mongodb.net:27017,node-rest-shop-shard-00-02-mrytj.mongodb.net:27017/test?ssl=true&replicaSet=node-rest-shop-shard-0&authSource=admin&retryWrites=true"
+module.exports = mongoConfig;

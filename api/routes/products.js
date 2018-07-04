@@ -1,5 +1,9 @@
 const express = require('express');
 const router = express.Router();
+const mongoose = require('mongoose');
+
+// Model
+const Product = require('../models/product');
 
 // Status helper
 const status = require('../../helpers/status.code.helper');
@@ -11,14 +15,20 @@ router.get('/', (req, res, next) => {
 });
 
 router.post('/', (req, res, next) => {
-    const newProduct = {
+    const newProduct = new Product({
+        _id: new mongoose.Types.ObjectId(),
         name: req.body.name,
         price: req.body.price
-    }
+    });
+
+    newProduct.save(function (err) {
+        if (err) return handleError(err);
+        console.log('Product Saved', newProduct);
+    })
 
     res.status(status.post_CREATED).json({
-        message: 'Handling POST request to /products',
-        product: newProduct
+        message: 'Product saved successfuly.',
+        newProduct: newProduct
     })
 });
 

@@ -1,6 +1,13 @@
 const express = require('express');
 const app = express();
 
+// Mongo DB
+const mongoose = require('mongoose');
+const mongoConfig = require('./mongo.config');
+mongoose.connect(mongoConfig);
+console.log(mongoConfig);
+
+
 // Body-parser JSON
 const bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({extended: false}));
