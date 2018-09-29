@@ -1,17 +1,15 @@
 const express = require('express');
+const bodyParser = require('body-parser');
 const app = express();
+
+// Body-parser JSON
+app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.json());
 
 // Mongo DB
 const mongoose = require('mongoose');
 const mongoConfig = require('./mongo.config');
-mongoose.connect(mongoConfig);
-console.log(mongoConfig);
-
-
-// Body-parser JSON
-const bodyParser = require('body-parser');
-app.use(bodyParser.urlencoded({extended: false}));
-app.use(bodyParser.json());
+mongoose.connect(mongoConfig, { useNewUrlParser: true });
 
 // Logs http
 const logs = require('morgan');
@@ -58,4 +56,5 @@ app.use((error, req, res, next) => {
     })
 });
 
+console.log('node-rest-shop API started sucessfully.');
 module.exports = app;
