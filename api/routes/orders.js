@@ -4,6 +4,7 @@ const router = express.Router();
 
 // Model
 const Order = require('../models/order');
+const Product = require('../models/product');
 
 // Status helper
 const status = require('../../helpers/status.code.helper');
@@ -29,24 +30,32 @@ router.get('/', (req, res, next) => {
 
 // Insert one Order
 router.post('/', (req, res, next) => {
-    const newOrder = new Order({
-        _id: new mongoose.Types.ObjectId(),
-        product: req.body.productID,
-        quantity: req.body.quantity
-    });
-
-    newOrder.save()
-    .then(result => {
-        res.status(status.post_CREATED).json({
-            message: 'Order saved successfuly.',
-            newOrder: newOrder
+    const productID = req.body.productID;
+    Product.findById(productID).then(product => {
+        const newOrder = new Order({
+            _id: new mongoose.Types.ObjectId(),
+            product: product._id,
+            quantity: req.body.quantity
+        });
+    
+        newOrder.save()
+        .then(result => {
+            res.status(status.post_CREATED).json({
+                message: 'Order saved successfuly.',
+                newOrder: newOrder
+            });
+        }).catch(err => {
+            res.status(status.post_BADREQ).json({
+                message: 'Failed to save Order.',
+                error: err
+            });
         });
     }).catch(err => {
-        res.status(status.post_BADREQ).json({
-            message: 'Failed to save Order.',
+        res.status(status.get_NOT_FOUND).json({
+            message: 'Product not found.',
             error: err
-        });
-    });
+        })
+    })
 });
 
 // Get one order
