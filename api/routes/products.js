@@ -42,7 +42,7 @@ router.post('/', (req, res, next) => {
             newProduct: newProduct
         });
     }).catch(err => {
-        res.status(status.post_CREATED).json({
+        res.status(status.post_BADREQ).json({
             message: 'Failed to save Product.',
             error: err
         });

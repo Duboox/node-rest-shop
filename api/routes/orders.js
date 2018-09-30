@@ -1,44 +1,112 @@
 const express = require('express');
+const mongoose = require('mongoose');
 const router = express.Router();
+
+// Model
+const Order = require('../models/order');
 
 // Status helper
 const status = require('../../helpers/status.code.helper');
 
+
+// Get all Orders
 router.get('/', (req, res, next) => {
-    res.status(status.get_OK).json({
-        message: 'Handling GET request to /orders'
-    })
+    Order.find()
+    .select('_id product quantity')
+    .exec()
+    .then(docs => {
+        res.status(status.get_OK).json({
+            ordersCount: docs.length,
+            orders: docs
+        })
+    }).catch(err => {
+        res.status(status.get_NOT_FOUND).json({
+            message: 'No orders found.',
+            error: err
+        })
+    });
 });
 
+// Insert one Order
 router.post('/', (req, res, next) => {
-    const newOrder = {
-        productId: req.body.productId,
-        qty: req.body.qty
-    }
+    const newOrder = new Order({
+        _id: new mongoose.Types.ObjectId(),
+        product: req.body.productID,
+        quantity: req.body.quantity
+    });
 
-    res.status(status.post_CREATED).json({
-        message: 'Handling POST request to /orders',
-        order: order
-    })
+    newOrder.save()
+    .then(result => {
+        res.status(status.post_CREATED).json({
+            message: 'Order saved successfuly.',
+            newOrder: newOrder
+        });
+    }).catch(err => {
+        res.status(status.post_BADREQ).json({
+            message: 'Failed to save Order.',
+            error: err
+        });
+    });
 });
 
+// Get one order
 router.get('/:orderId', (req, res, next) => {
     const id = req.params.orderId;
-    if (id === 'special') {
-        res.status(status.get_OK).json({
-            message: 'special id',
-            id: id
-        })
-    } else {
+    Order.findById(id).exec().then(doc => {
+        if (doc) {
+            res.status(status.get_OK).json({
+                order: doc,
+            });
+        } else {
+            res.status(status.get_NOT_FOUND).json({
+                message: 'Order not found.',
+                error: err
+            });
+        }
+    }).catch(err => {
         res.status(status.get_NOT_FOUND).json({
-            message: 'special id not found',
+            message: 'Order not found.',
+            error: err
         })
-    }
+    })
 });
 
+// Update one Order
+router.patch('/:orderId', (req, res, next) => {
+    const id = req.params.orderId;
+    Order.update({ _id: id }, { $set: {
+        product: req.body.product,
+        quantity: req.body.quantity
+    }}).exec()
+    .then(result => {
+        res.status(status.get_OK).json({
+            message: 'Order updated sucessfully.',
+            result: result
+        });
+    })
+    .catch(err => {
+        res.status(status.get_NOT_FOUND).json({
+            message: 'Order not found.',
+            error: err
+        })
+    });
+});
+
+// Delete one order
 router.delete('/:orderId', (req, res, next) => {
-    res.status(status.get_OK).json({
-        message: 'deleted order',
+    const id = req.params.orderId;
+    Order.remove({ _id: id }).exec()
+    .then(result => {
+        res.status(status.get_OK).json({
+            message: 'Order deleted sucessfully.',
+            result: result
+        });
+    })
+    .catch(err => {
+        res.status(status.get_NOT_FOUND).json({
+            message: 'Order not found.',
+            error: err
+        })
     })
 });
 
