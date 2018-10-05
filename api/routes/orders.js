@@ -22,7 +22,7 @@ router.get('/', (req, res, next) => {
         })
     }).catch(err => {
         res.status(status.get_NOT_FOUND).json({
-            message: 'No orders found.',
+            message: 'No orders founded.',
             error: err
         })
     });
