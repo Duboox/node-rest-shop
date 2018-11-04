@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
+const io = require('socket.io')(server);
 
 // Body-parser JSON
 app.use(bodyParser.urlencoded({extended: false}));
@@ -55,6 +56,11 @@ app.use((error, req, res, next) => {
         }
     })
 });
+
+//Socket io Test
+io.on('connect', function(socket) {
+    console.log('alguien se ha conectado.');
+})
 
 console.log('node-rest-shop API started sucessfully.');
 module.exports = app;
